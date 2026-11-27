@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.aelawnpros.com/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/natural-stone-walkway.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://www.aelawnpros.com/services</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.aelawnpros.com/work</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/drainage-pipe-install.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/natural-stone-walkway.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/paver-staircase-slope.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/paver-walkway-lakefront.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/picket-fence-installation.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/planting-bed-paver-patio.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/raised-garden-bed.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/retaining-wall-driveway.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/sod-delivery-trailer.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/sod-installation.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/timber-steps-slope.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/tree-removal.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.aelawnpros.com/assets/img/tree-shrub-planting.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://www.aelawnpros.com/contact</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
