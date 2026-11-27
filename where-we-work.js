@@ -1,22 +1,26 @@
+/* Service-area map (homepage). Leaflet is loaded only when the map nears the viewport. */
 (function () {
-  const section = document.getElementById("where-we-work");
-  const mapEl = document.getElementById("service-leaflet-map");
-  const btnReplay = document.getElementById("replay-map-intro");
-  const cityButtons = Array.from(document.querySelectorAll("[data-city]"));
+  "use strict";
 
-  if (!section || !mapEl || typeof L === "undefined") {
-    return;
-  }
+  const mapEl = document.getElementById("service-leaflet-map");
+  if (!mapEl) return;
+
+  const cityButtons = Array.from(document.querySelectorAll("[data-city]"));
+  const placeholder = mapEl.parentElement.querySelector(".map-placeholder");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const LEAFLET_CSS = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+  const LEAFLET_JS = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
 
   const CITIES = [
-    { name: "Spartanburg, SC", pos: [34.9496, -81.9321], labelSide: "right" },
-    { name: "Tryon, NC", pos: [35.2089, -82.2344], labelSide: "left" },
-    { name: "Inman, SC", pos: [35.0479, -82.0919], labelSide: "right" },
-    { name: "Landrum, SC", pos: [35.1751, -82.1893], labelSide: "left" },
-    { name: "Columbus, NC", pos: [35.2532, -82.1971], labelSide: "right" }
+    { name: "Spartanburg, SC", pos: [34.9496, -81.9321], side: "right" },
+    { name: "Inman, SC", pos: [35.0479, -82.0919], side: "right" },
+    { name: "Landrum, SC", pos: [35.1751, -82.1893], side: "left" },
+    { name: "Tryon, NC", pos: [35.2089, -82.2344], side: "left" },
+    { name: "Columbus, NC", pos: [35.2532, -82.1971], side: "right" }
   ];
 
-  const SERVICE_POLYGON = [
+  const SERVICE_AREA = [
     [35.45, -83.05],
     [35.32, -82.05],
     [35.05, -81.55],
@@ -27,43 +31,27 @@
     [35.45, -83.05]
   ];
 
-  const prefersReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let map = null;
+  let loading = null;
+  const markers = new Map();
+  let pendingCity = null;
 
-  let mapInstance = null;
-  let servicePolygon = null;
-  let cityMarkers = [];
-  let markerByCity = new Map();
-  let markerTimeouts = [];
-  let introStarted = false;
-  let flyMoveEndHandler = null;
-
-  const MARKER_STAGGER_MS = 0;
-  const FLY_DURATION = prefersReduceMotion ? 0.01 : 2.2;
-  const BOUNDS_PAD = 0.045;
-  const POST_ZOOM_STEP = prefersReduceMotion ? 0 : 0.55;
-  const POST_ZOOM_DURATION = prefersReduceMotion ? 0.01 : 0.9;
-  const DOT_ANCHOR_X = 10;
-  const DOT_ANCHOR_Y = 20;
-
-  function clearMarkerTimeouts() {
-    markerTimeouts.forEach((id) => clearTimeout(id));
-    markerTimeouts = [];
-  }
-
-  function destroyMap() {
-    clearMarkerTimeouts();
-    if (flyMoveEndHandler && mapInstance) {
-      mapInstance.off("moveend", flyMoveEndHandler);
-      flyMoveEndHandler = null;
-    }
-    cityMarkers = [];
-    markerByCity = new Map();
-    servicePolygon = null;
-    if (mapInstance) {
-      mapInstance.remove();
-      mapInstance = null;
-    }
-    mapEl.replaceChildren();
+  function loadLeaflet() {
+    if (window.L) return Promise.resolve();
+    if (loading) return loading;
+    loading = new Promise((resolve, reject) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = LEAFLET_CSS;
+      document.head.appendChild(css);
+      const js = document.createElement("script");
+      js.src = LEAFLET_JS;
+      js.async = true;
+      js.onload = resolve;
+      js.onerror = reject;
+      document.head.appendChild(js);
+    });
+    return loading;
   }
 
   function escapeHtml(text) {
@@ -72,125 +60,96 @@
     return div.innerHTML;
   }
 
-  function addCityMarkersStaggered() {
-    clearMarkerTimeouts();
-    cityMarkers = [];
-    markerByCity = new Map();
-
-    CITIES.forEach((city, index) => {
-      const id = window.setTimeout(() => {
-        const side = city.labelSide === "left" ? "left" : "right";
-        const labelW = Math.min(188, 90 + city.name.length * 5.35);
-        const lineW = 30;
-        const iconH = 44;
-        const iconW = Math.round(labelW + lineW + 24);
-
-        const inner = document.createElement("div");
-        inner.className = `ae-city-marker ae-city-marker--${side}`;
-        inner.style.setProperty("--city-label-w", `${labelW}px`);
-        inner.innerHTML =
-          side === "left"
-            ? `<span class="ae-city-label">${escapeHtml(city.name)}</span><span class="ae-city-line" aria-hidden="true"></span><span class="ae-city-dot" aria-hidden="true"></span>`
-            : `<span class="ae-city-dot" aria-hidden="true"></span><span class="ae-city-line" aria-hidden="true"></span><span class="ae-city-label">${escapeHtml(city.name)}</span>`;
-
-        const icon = L.divIcon({
-          className: "ae-city-marker-outer",
-          html: inner,
-          iconSize: [iconW, iconH],
-          iconAnchor: side === "left" ? [iconW - DOT_ANCHOR_X, DOT_ANCHOR_Y] : [DOT_ANCHOR_X, DOT_ANCHOR_Y]
-        });
-
-        const marker = L.marker(city.pos, { icon })
-          .addTo(mapInstance)
-          .bindPopup(`<strong>${escapeHtml(city.name)}</strong><br>A&amp;E service area`);
-        marker.on("click", () => setActiveCity(city.name));
-        cityMarkers.push(marker);
-        markerByCity.set(city.name, marker);
-
-        if (index === 0) {
-          setActiveCity(city.name);
-        }
-      }, index * MARKER_STAGGER_MS);
-      markerTimeouts.push(id);
+  function setActive(name) {
+    cityButtons.forEach((b) => {
+      const on = b.dataset.city === name;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", String(on));
     });
   }
 
-  function setActiveCity(cityName) {
-    cityButtons.forEach((button) => {
-      button.classList.toggle("active", button.dataset.city === cityName);
-    });
-  }
-
-  function focusCity(cityName) {
-    const city = CITIES.find((item) => item.name === cityName);
-    if (!city) return;
-
-    introStarted = true;
-    if (!mapInstance) {
-      runIntro();
+  function focusCity(name) {
+    setActive(name);
+    if (!map) {
+      pendingCity = name;
+      init();
+      return;
     }
-
-    setActiveCity(cityName);
-
-    window.setTimeout(() => {
-      if (!mapInstance) return;
-      mapInstance.flyTo(city.pos, 11, {
-        duration: prefersReduceMotion ? 0.01 : 0.75,
-        easeLinearity: 0.2
-      });
-
-      const marker = markerByCity.get(cityName);
-      if (marker) {
-        marker.openPopup();
-      }
-    }, mapInstance && markerByCity.size ? 0 : 520);
+    const city = CITIES.find((c) => c.name === name);
+    if (!city) return;
+    map.flyTo(city.pos, 11, { duration: reduceMotion ? 0.01 : 0.8, easeLinearity: 0.2 });
+    markers.get(name)?.openPopup();
   }
 
-  function addServicePolygon() {
-    if (!mapInstance) return;
-    servicePolygon = L.polygon(SERVICE_POLYGON, {
-      color: "#0d3a0d",
+  function build() {
+    const L = window.L;
+    map = L.map(mapEl, { scrollWheelZoom: false, zoomControl: true, attributionControl: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
+    map.fitBounds(L.latLngBounds(SERVICE_AREA).pad(0.04), { animate: false });
+
+    L.polygon(SERVICE_AREA, {
+      color: "#102a1d",
       weight: 1.25,
-      fillColor: "#4da24d",
-      fillOpacity: 0.16,
+      fillColor: "#8cc63f",
+      fillOpacity: 0.18,
       dashArray: "5 6"
-    }).addTo(mapInstance);
+    }).addTo(map);
+
+    CITIES.forEach((city) => {
+      const left = city.side === "left";
+      const labelW = Math.min(188, 90 + city.name.length * 5.35);
+      const iconW = Math.round(labelW + 26 + 24);
+      const html = left
+        ? `<div class="ae-city-marker ae-city-marker--left"><span class="ae-city-label">${escapeHtml(city.name)}</span><span class="ae-city-line"></span><span class="ae-city-dot"></span></div>`
+        : `<div class="ae-city-marker"><span class="ae-city-dot"></span><span class="ae-city-line"></span><span class="ae-city-label">${escapeHtml(city.name)}</span></div>`;
+      const icon = L.divIcon({
+        className: "ae-city-marker-outer",
+        html,
+        iconSize: [iconW, 44],
+        iconAnchor: left ? [iconW - 9, 22] : [9, 22]
+      });
+      const marker = L.marker(city.pos, { icon, title: city.name })
+        .addTo(map)
+        .bindPopup(`<strong>${escapeHtml(city.name)}</strong><br>A&amp;E service area`);
+      marker.on("click", () => setActive(city.name));
+      markers.set(city.name, marker);
+    });
+
+    // Enable wheel zoom only after the user interacts with the map, so page scrolling isn't hijacked.
+    map.once("focus click", () => map.scrollWheelZoom.enable());
+    placeholder?.remove();
+
+    if (pendingCity) {
+      const name = pendingCity;
+      pendingCity = null;
+      focusCity(name);
+    }
   }
 
-  function runIntro() {
-    destroyMap();
-
-    mapInstance = L.map(mapEl, { scrollWheelZoom: true, zoomControl: true }).setView([18, -78], 3);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19
-    }).addTo(mapInstance);
-
-    const afterLayout = () => {
-      mapInstance.invalidateSize();
-      const bounds = L.latLngBounds(SERVICE_POLYGON).pad(BOUNDS_PAD);
-      mapInstance.fitBounds(bounds, { animate: false });
-      addServicePolygon();
-      addCityMarkersStaggered();
-    };
-
-    window.requestAnimationFrame(afterLayout);
+  function init() {
+    loadLeaflet()
+      .then(() => {
+        if (!map) build();
+      })
+      .catch(() => {
+        if (placeholder) placeholder.textContent = "Map unavailable right now.";
+      });
   }
 
-  btnReplay?.addEventListener("click", () => {
-    introStarted = true;
-    runIntro();
-  });
+  cityButtons.forEach((b) => b.addEventListener("click", () => focusCity(b.dataset.city)));
 
-  cityButtons.forEach((button) => {
-    button.addEventListener("click", () => focusCity(button.dataset.city));
-  });
-
-  // Initialize immediately so the map always renders,
-  // even when IntersectionObserver timing is inconsistent.
-  if (!introStarted) {
-    introStarted = true;
-    window.requestAnimationFrame(runIntro);
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          init();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+    io.observe(mapEl);
+  } else {
+    init();
   }
 })();
