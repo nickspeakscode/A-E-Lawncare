@@ -335,6 +335,10 @@
       v.playsInline = true;
       v.poster = item.querySelector("img")?.getAttribute("src") || "";
       media.appendChild(v);
+      v.play().catch(() => {
+        v.muted = true;
+        v.play().catch(() => {});
+      });
     } else {
       const im = document.createElement("img");
       im.src = item.getAttribute("href");
@@ -386,15 +390,21 @@
   const modal = document.getElementById("quote-modal");
   let modalReturnFocus = null;
 
-  function setModal(open) {
+  function setModal(open, service) {
     if (!modal) return;
     if (modal.classList.contains("is-open") === open) return;
     modal.classList.toggle("is-open", open);
     modal.setAttribute("aria-hidden", String(!open));
     lockScroll(open);
+    // contact.js listens for this to reset / prefill the stepper form
+    document.dispatchEvent(new CustomEvent("quotemodal", { detail: { open, service: service || "" } }));
     if (open) {
       modalReturnFocus = document.activeElement;
-      setTimeout(() => modal.querySelector('input[name="name"]')?.focus(), 120);
+      setTimeout(() => {
+        const step = modal.querySelector(".quote-step.is-active") || modal;
+        const target = Array.from(step.querySelectorAll("select, input, textarea")).find((el) => !el.value);
+        (target || modal.querySelector(".modal-close"))?.focus({ preventScroll: true });
+      }, 150);
     } else {
       modalReturnFocus?.focus?.({ preventScroll: true });
     }
@@ -404,9 +414,10 @@
     document.addEventListener("click", (e) => {
       const opener = e.target.closest("[data-quote-open]");
       if (opener) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return;
         e.preventDefault();
         setNav(false);
-        setModal(true);
+        setModal(true, opener.dataset.service);
         return;
       }
       if (e.target.closest("[data-modal-close]")) setModal(false);

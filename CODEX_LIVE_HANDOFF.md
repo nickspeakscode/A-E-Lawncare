@@ -8,7 +8,8 @@ This file reflects the current live project structure and behavior for `https://
 
 Vercel `cleanUrls` is on, so pages are served without `.html`.
 
-- `/` -> `index.html` (hero video, services grid, work carousel, about, process, service-area map, FAQ, quote modal)
+- `/` -> `index.html` (hero video, services grid, work carousel, about, process, service-area map, FAQ)
+- The 3-step "Free estimate" pop-up (`#quote-modal`) is on every page except `/contact`; any element with `data-quote-open` opens it, and `data-service="..."` pre-selects a service
 - `/services` -> `services.html` (10 service sections with sticky in-page nav; "Get a quote" links pre-select the service on `/contact?service=...`)
 - `/work` -> `work.html` (filterable project gallery with lightbox; `/work?filter=hardscape|lawn|grading|planting|carpentry`)
 - `/contact` -> `contact.html` (full quote form)

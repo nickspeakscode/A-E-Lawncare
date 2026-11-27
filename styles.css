@@ -45,6 +45,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 16px);
 }
@@ -2259,7 +2260,7 @@ p {
   gap: 8px;
 }
 
-/* ---------- Quote modal ---------- */
+/* ---------- Quote modal (free estimate pop-up) ---------- */
 
 .modal {
   position: fixed;
@@ -2267,7 +2268,7 @@ p {
   z-index: 250;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 24px;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s var(--ease), visibility 0.3s;
@@ -2281,23 +2282,24 @@ p {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(6, 16, 10, 0.7);
-  backdrop-filter: blur(6px);
+  background: rgba(6, 16, 10, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .modal-panel {
   position: relative;
-  width: min(680px, 100%);
-  max-height: calc(100vh - 40px);
-  max-height: calc(100svh - 40px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: clamp(24px, 4vw, 44px);
+  width: min(980px, 100%);
+  height: min(680px, calc(100vh - 48px));
+  height: min(680px, calc(100dvh - 48px));
+  display: grid;
+  grid-template-columns: 340px 1fr;
   border-radius: var(--radius-lg);
   background: var(--paper);
   box-shadow: var(--shadow-lg);
+  overflow: hidden;
   transform: translateY(24px) scale(0.98);
-  transition: transform 0.45s var(--ease);
+  transition: transform 0.5s var(--ease);
 }
 
 .modal.is-open .modal-panel {
@@ -2305,9 +2307,7 @@ p {
 }
 
 .modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  flex: none;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -2315,6 +2315,12 @@ p {
   background: var(--paper);
   display: grid;
   place-items: center;
+  transition: background-color 0.2s, transform 0.3s var(--ease);
+}
+
+.modal-close:hover {
+  background: var(--sand);
+  transform: rotate(90deg);
 }
 
 .modal-close svg {
@@ -2322,27 +2328,349 @@ p {
   height: 18px;
 }
 
-.modal-head {
+/* Left brand panel */
+.quote-aside {
+  position: relative;
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  padding: 36px 32px;
+  color: #fff;
+  background: var(--forest-950);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.quote-aside-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.quote-aside-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.quote-aside-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 29, 20, 0.5) 0%, rgba(11, 29, 20, 0.85) 55%, var(--forest-950) 100%);
+}
+
+.quote-aside-logo {
+  width: 72px;
+  margin-bottom: auto;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+
+.quote-aside-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+  margin: 0 0 22px;
+}
+
+.quote-aside-title em {
+  color: var(--leaf);
+}
+
+.quote-perks {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.quote-perks li {
+  display: flex;
   align-items: center;
-  margin-bottom: 28px;
-  padding-right: 48px;
+  gap: 10px;
 }
 
-.modal-head img {
-  width: 60px;
+.quote-perks svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  border-radius: 50%;
+  background: rgba(140, 198, 63, 0.2);
+  color: var(--leaf);
 }
 
-.modal-head h2 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+.quote-aside-call {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.quote-aside-call:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.quote-aside-call svg {
+  width: 20px;
+  height: 20px;
+  color: var(--leaf);
+}
+
+.quote-aside-call small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Right: stepper */
+.quote-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.quote-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 28px 32px 18px;
+}
+
+.quote-top h2 {
+  font-size: 1.7rem;
   margin: 0 0 4px;
 }
 
-.modal-head p {
+.quote-step-label {
   margin: 0;
+  font-size: 0.88rem;
   color: var(--muted);
-  font-size: 0.95rem;
+}
+
+.quote-step-label [data-step-title] {
+  color: var(--forest-700);
+  font-weight: 600;
+}
+
+.quote-progress {
+  height: 3px;
+  margin: 0 32px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.quote-progress span {
+  display: block;
+  height: 100%;
+  width: 33.33%;
+  background: var(--leaf);
+  border-radius: 3px;
+  transition: width 0.5s var(--ease);
+}
+
+.quote-stepper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+
+.quote-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 32px 8px;
+}
+
+.quote-step {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.quote-step.is-active {
+  display: grid;
+  gap: 16px;
+  animation: step-in 0.45s var(--ease);
+}
+
+.quote-step.is-back {
+  animation-name: step-in-back;
+}
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes step-in-back {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: none; }
+}
+
+.quote-step-intro {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.quote-step textarea {
+  min-height: 150px;
+}
+
+.quote-fineprint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.quote-stepper .form-status {
+  margin: 0 32px;
+  min-height: 0;
+}
+
+.quote-stepper .form-status:empty {
+  display: none;
+}
+
+.quote-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 32px 24px;
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  background: var(--paper);
+}
+
+.quote-footer [data-step-back] {
+  margin-right: auto;
+  --btn-fg: var(--ink);
+  border-color: var(--line);
+}
+
+.quote-footer [hidden] {
+  display: none;
+}
+
+.quote-success {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 40px 48px;
+  animation: step-in 0.5s var(--ease);
+}
+
+.quote-success[hidden] {
+  display: none;
+}
+
+.quote-success-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 22px;
+  background: var(--leaf-soft);
+  color: var(--forest-700);
+  box-shadow: 0 0 0 10px rgba(140, 198, 63, 0.12);
+}
+
+.quote-success-icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.quote-success h3 {
+  font-size: 1.9rem;
+}
+
+.quote-success p {
+  max-width: 40ch;
+  color: var(--muted);
+}
+
+.quote-success .btn {
+  margin-top: 10px;
+  min-width: 160px;
+}
+
+.quote-main.is-done .quote-progress,
+.quote-main.is-done .quote-step-label {
+  visibility: hidden;
+}
+
+@media (max-width: 860px) {
+  .modal {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .modal-panel {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    grid-template-columns: 1fr;
+    border-radius: 0;
+    transform: translateY(40px);
+  }
+
+  .quote-aside {
+    display: none;
+  }
+
+  .quote-top {
+    padding: 18px 20px 14px;
+  }
+
+  .quote-top h2 {
+    font-size: 1.45rem;
+  }
+
+  .quote-progress {
+    margin: 0 20px;
+  }
+
+  .quote-body {
+    padding: 20px 20px 8px;
+  }
+
+  .quote-stepper .form-status {
+    margin: 0 20px;
+  }
+
+  .quote-footer {
+    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  }
+
+  .quote-footer .btn {
+    flex: 1;
+  }
+
+  .quote-footer [data-step-back] {
+    flex: 0 0 auto;
+  }
 }
 
 /* ---------- Footer ---------- */
@@ -2724,5 +3052,15 @@ p {
 
   .faq-answer {
     padding-right: 0;
+  }
+}
+
+.quote-stepper[hidden] {
+  display: none;
+}
+
+@media (max-width: 1240px) and (min-width: 1081px) {
+  .header-phone {
+    display: none;
   }
 }

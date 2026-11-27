@@ -368,7 +368,7 @@
               </div>
               <div class="field">
                 <label for="zip">ZIP <span class="req">*</span></label>
-                <input id="zip" name="zip_code" type="text" required inputmode="numeric" autocomplete="postal-code" placeholder="29301" maxlength="10">
+                <input id="zip" name="zip_code" type="text" required inputmode="numeric" autocomplete="postal-code" placeholder="29301" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?" title="5-digit ZIP code">
               </div>
             </div>
           </div>
@@ -378,28 +378,28 @@
             <div class="field">
               <label for="service">Service needed <span class="req">*</span></label>
               <select id="service" name="service" required>
-              <option value="">Select a service</option>
-              <option value="Mulch installation">Mulch installation</option>
-              <option value="Pine needles installation">Pine needles installation</option>
-              <option value="Leaf cleanup">Leaf cleanup</option>
-              <option value="Lawn mowing">Lawn mowing</option>
-              <option value="Tree removal">Tree removal</option>
-              <option value="Stump removal">Stump removal</option>
-              <option value="Shrub trimming">Shrub trimming</option>
-              <option value="Retaining walls">Retaining walls</option>
-              <option value="Paver installation">Paver installation</option>
-              <option value="Grading">Grading</option>
-              <option value="Building and repairing horse fences">Building and repairing horse fences</option>
-              <option value="Debris removal">Debris removal</option>
-              <option value="Mini excavator services">Mini excavator services</option>
-              <option value="Skid steer services">Skid steer services</option>
-              <option value="Sod installation">Sod installation</option>
-              <option value="More (describe in message)">More (describe in message)</option>
+                <option value="">Select a service</option>
+                <option value="Mulch installation">Mulch installation</option>
+                <option value="Pine needles installation">Pine needles installation</option>
+                <option value="Leaf cleanup">Leaf cleanup</option>
+                <option value="Lawn mowing">Lawn mowing</option>
+                <option value="Tree removal">Tree removal</option>
+                <option value="Stump removal">Stump removal</option>
+                <option value="Shrub trimming">Shrub trimming</option>
+                <option value="Retaining walls">Retaining walls</option>
+                <option value="Paver installation">Paver installation</option>
+                <option value="Grading">Grading</option>
+                <option value="Building and repairing horse fences">Building and repairing horse fences</option>
+                <option value="Debris removal">Debris removal</option>
+                <option value="Mini excavator services">Mini excavator services</option>
+                <option value="Skid steer services">Skid steer services</option>
+                <option value="Sod installation">Sod installation</option>
+                <option value="More (describe in message)">More (describe in message)</option>
               </select>
             </div>
             <div class="field">
               <label for="message">Tell us about the job <span class="req">*</span></label>
-              <textarea id="message" name="message" rows="5" required placeholder="Property size, what you would like done, timeline, gate codes or anything else we should know."></textarea>
+              <textarea id="message" name="message" rows="5" required placeholder="Property size, what you would like done, timeline, or anything else we should know."></textarea>
             </div>
           </div>
             <div class="form-foot">

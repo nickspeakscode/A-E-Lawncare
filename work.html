@@ -229,7 +229,7 @@
         <button class="filter-btn" type="button" data-filter="planting" aria-pressed="false">Planting<span class="count">3</span></button>
         <button class="filter-btn" type="button" data-filter="carpentry" aria-pressed="false">Carpentry &amp; fencing<span class="count">3</span></button>
       </div>
-      <div class="gallery" id="gallery" aria-live="polite">
+      <div class="gallery" id="gallery">
         <a class="work-tile" href="/assets/img/paver-walkway-lakefront.webp" data-lightbox="work" data-title="Lakefront paver pathway" data-desc="A flowing paver path that ties a large lawn to the dock, set on a compacted base with clean edges." data-category="hardscape" aria-label="View photo: Lakefront paver pathway"><img src="/assets/img/paver-walkway-lakefront.jpg" srcset="/assets/img/paver-walkway-lakefront-480.webp 480w, /assets/img/paver-walkway-lakefront.webp 768w" sizes="(max-width: 620px) 50vw, (max-width: 1080px) 50vw, 400px" width="768" height="1024" alt="Curved paver walkway leading through a green lawn toward a lakeside dock" fetchpriority="high" decoding="async"><span class="zoom-icon"><svg aria-hidden="true"><use href="#i-expand"/></svg></span><span class="work-tile-caption"><small>Hardscape</small><strong>Lakefront paver pathway</strong></span></a>
         <a class="work-tile" href="/assets/img/natural-stone-walkway.webp" data-lightbox="work" data-title="Natural stone walkway" data-desc="Custom curved stone path with gravel joints and tidy transitions to the beds on either side." data-category="hardscape" aria-label="View photo: Natural stone walkway"><img src="/assets/img/natural-stone-walkway.jpg" srcset="/assets/img/natural-stone-walkway-480.webp 480w, /assets/img/natural-stone-walkway.webp 768w" sizes="(max-width: 620px) 50vw, (max-width: 1080px) 50vw, 400px" width="768" height="1024" alt="Curved natural stone walkway with dark gravel joints leading to a home entry" fetchpriority="high" decoding="async"><span class="zoom-icon"><svg aria-hidden="true"><use href="#i-expand"/></svg></span><span class="work-tile-caption"><small>Hardscape</small><strong>Natural stone walkway</strong></span></a>
         <a class="work-tile" href="/assets/video/lawn-care-reel-720.mp4" data-type="video" data-lightbox="work" data-title="Recurring mowing on a horse property" data-desc="Our crew keeping a large fenced property sharp with mowing and trim work along the fence line." data-category="lawn" aria-label="Play video: Recurring mowing on a horse property"><img src="/assets/video/lawn-care-reel-poster.jpg" width="540" height="960" alt="Video of a zero-turn mower cutting grass along a wooden horse fence" loading="lazy" decoding="async"><span class="play-badge"><span><svg aria-hidden="true"><use href="#i-play"/></svg></span></span><span class="work-tile-caption"><small>Lawn care</small><strong>Recurring mowing on a horse property</strong></span></a>
@@ -263,6 +263,125 @@
       </div>
     </section>
   </main>
+  <div class="modal" id="quote-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-panel quote-modal" role="dialog" aria-modal="true" aria-labelledby="quote-modal-title">
+      <aside class="quote-aside">
+        <div class="quote-aside-media" aria-hidden="true"><img src="/assets/img/paver-walkway-lakefront-480.webp" width="480" height="640" alt="" loading="lazy" decoding="async"></div>
+        <img class="quote-aside-logo" src="/assets/brand/logo-160.webp" width="160" height="151" alt="" loading="lazy">
+        <p class="quote-aside-title">Outdoor spaces, <em>done right.</em></p>
+        <ul class="quote-perks"><li><svg aria-hidden="true"><use href="#i-check"/></svg>Free, no-obligation estimates</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Licensed &amp; insured crews</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>Residential &amp; commercial</li></ul>
+        <a class="quote-aside-call" href="tel:+18644739976"><svg aria-hidden="true"><use href="#i-phone"/></svg><span><small>Prefer to talk?</small>(864) 473-9976</span></a>
+      </aside>
+      <div class="quote-main">
+        <div class="quote-top">
+          <div>
+            <h2 id="quote-modal-title">Free estimate</h2>
+            <p class="quote-step-label"><span data-step-count>Step 1 of 3</span> · <span data-step-title>Your project</span></p>
+          </div>
+          <button type="button" class="modal-close" data-modal-close aria-label="Close estimate form"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+        </div>
+        <div class="quote-progress" aria-hidden="true"><span data-step-progress></span></div>
+        <form id="quote-form-modal" class="quote-form quote-stepper" novalidate data-stepper>
+          <div class="quote-body">
+            <fieldset class="quote-step is-active" data-step-title="Your project">
+              <legend class="sr-only">Your project</legend>
+              <p class="quote-step-intro">What can we help with?</p>
+            <div class="field">
+              <label for="modal-service">Service needed <span class="req">*</span></label>
+              <select id="modal-service" name="service" required>
+                <option value="">Select a service</option>
+                <option value="Mulch installation">Mulch installation</option>
+                <option value="Pine needles installation">Pine needles installation</option>
+                <option value="Leaf cleanup">Leaf cleanup</option>
+                <option value="Lawn mowing">Lawn mowing</option>
+                <option value="Tree removal">Tree removal</option>
+                <option value="Stump removal">Stump removal</option>
+                <option value="Shrub trimming">Shrub trimming</option>
+                <option value="Retaining walls">Retaining walls</option>
+                <option value="Paver installation">Paver installation</option>
+                <option value="Grading">Grading</option>
+                <option value="Building and repairing horse fences">Building and repairing horse fences</option>
+                <option value="Debris removal">Debris removal</option>
+                <option value="Mini excavator services">Mini excavator services</option>
+                <option value="Skid steer services">Skid steer services</option>
+                <option value="Sod installation">Sod installation</option>
+                <option value="More (describe in message)">More (describe in message)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="modal-message">Tell us about the job <span class="req">*</span></label>
+              <textarea id="modal-message" name="message" rows="5" required placeholder="Property size, what you would like done, timeline, or anything else we should know."></textarea>
+            </div>
+            </fieldset>
+            <fieldset class="quote-step" data-step-title="Property">
+              <legend class="sr-only">Property</legend>
+              <p class="quote-step-intro">Where is the property?</p>
+            <div class="field">
+              <label for="modal-street">Street address <span class="req">*</span></label>
+              <input id="modal-street" name="street_address" type="text" required autocomplete="street-address" placeholder="123 Main Street">
+            </div>
+            <div class="field-row field-row-3">
+              <div class="field">
+                <label for="modal-city">City <span class="req">*</span></label>
+                <input id="modal-city" name="city" type="text" required autocomplete="address-level2" placeholder="Spartanburg">
+              </div>
+              <div class="field">
+                <label for="modal-state">State <span class="req">*</span></label>
+                <select id="modal-state" name="state" required autocomplete="address-level1" data-us-state-select>
+                  <option value="">Select state</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="modal-zip">ZIP <span class="req">*</span></label>
+                <input id="modal-zip" name="zip_code" type="text" required inputmode="numeric" autocomplete="postal-code" placeholder="29301" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?" title="5-digit ZIP code">
+              </div>
+            </div>
+            <fieldset class="fieldset-plain field">
+              <legend>Are you a new or existing customer? <span class="req">*</span></legend>
+              <div class="choice-row">
+                <label class="choice"><input type="radio" name="customer_type" value="New customer" required><span>New customer</span></label>
+                <label class="choice"><input type="radio" name="customer_type" value="Existing customer"><span>Existing customer</span></label>
+              </div>
+            </fieldset>
+            </fieldset>
+            <fieldset class="quote-step" data-step-title="Contact info">
+              <legend class="sr-only">Contact info</legend>
+              <p class="quote-step-intro">How should we reach you?</p>
+            <div class="field">
+              <label for="modal-name">Full name <span class="req">*</span></label>
+              <input id="modal-name" name="name" type="text" required autocomplete="name" placeholder="Your full name">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="modal-phone">Phone <span class="req">*</span></label>
+                <input id="modal-phone" name="phone" type="tel" required autocomplete="tel" placeholder="(864) 000-0000">
+              </div>
+              <div class="field">
+                <label for="modal-email">Email <span class="req">*</span></label>
+                <input id="modal-email" name="email" type="email" required autocomplete="email" placeholder="you@email.com">
+              </div>
+            </div>
+              <p class="quote-fineprint">We only use your details to follow up on this request.</p>
+            </fieldset>
+          </div>
+          <p id="quote-modal-status" class="form-status" role="status" aria-live="polite"></p>
+          <div class="quote-footer">
+            <button type="button" class="btn btn-ghost" data-step-back hidden><svg aria-hidden="true"><use href="#i-arrow-left"/></svg>Back</button>
+            <button type="button" class="btn btn-accent" data-step-next>Continue<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button type="submit" class="btn btn-accent" data-step-submit hidden>Send request<svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </form>
+        <div class="quote-success" data-quote-success hidden>
+          <span class="quote-success-icon"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+          <h3>Request received!</h3>
+          <p>Thanks for reaching out. We will review your project and get back to you soon with a clear estimate.</p>
+          <p>Need us sooner? Call <a href="tel:+18644739976"><strong>(864) 473-9976</strong></a>.</p>
+          <button type="button" class="btn" data-modal-close>Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
@@ -319,5 +438,9 @@
   </div>
 
   <script src="/script.js" defer></script>
+  <script src="/supabase-config.js" defer></script>
+  <script src="/supabase-client.js" defer></script>
+  <script src="/us-states.js" defer></script>
+  <script src="/contact.js" defer></script>
 </body>
 </html>
